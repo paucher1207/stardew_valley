@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión - Stardew Valley</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Gestión - Stardew Valley</h1>
+            <p>Gestiona agricultores, productos y ventas</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="farmers">Agricultores</div>
+            <div class="nav-tab" data-tab="products">Productos</div>
+            <div class="nav-tab" data-tab="sales">Ventas</div>
+            <div class="nav-tab" data-tab="stats">Estadísticas</div>
+        </div>
+        
+        <!-- Tab Agricultores -->
+        <div id="farmers" class="tab-content active">
+            <h2>Gestión de Agricultores</h2>
+            
+            <div id="farmer-message"></div>
+            
+            <form id="farmer-form">
+                <input type="hidden" id="farmer-id">
+                <div class="form-group">
+                    <label for="farmer-name" class="required">Nombre</label>
+                    <input type="text" id="farmer-name" placeholder="Ej: Pedro Pérez" required>
+                    <div class="error" id="farmer-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="farmer-farm" class="required">Granja</label>
+                    <input type="text" id="farmer-farm" placeholder="Ej: Granja Soleada" required>
+                    <div class="error" id="farmer-farm-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="farmer-email" class="required">Correo</label>
+                    <input type="email" id="farmer-email" placeholder="Ej: pedro@stardew.com" required>
+                    <div class="error" id="farmer-email-error"></div>
+                </div>
+                <button type="submit" class="btn" id="farmer-submit">Guardar Agricultor</button>
+                <button type="button" class="btn btn-secondary" id="farmer-cancel" style="display: none;">Cancelar</button>
+            </form>
+            
+            <h3>Lista de Agricultores</h3>
+            <table id="farmers-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Granja</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Tab Productos -->
+        <div id="products" class="tab-content">
+            <h2>Gestión de Productos</h2>
+            
+            <div id="product-message"></div>
+            
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="product-name" class="required">Nombre</label>
+                    <input type="text" id="product-name" placeholder="Ej: Zanahoria" required>
+                    <div class="error" id="product-name-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="product-type" class="required">Tipo</label>
+                    <select id="product-type" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Vegetal">Vegetal</option>
+                        <option value="Fruta">Fruta</option>
+                        <option value="Animal">Producto Animal</option>
+                        <option value="Artesania">Artesanía</option>
+                        <option value="Mineral">Mineral</option>
+                    </select>
+                    <div class="error" id="product-type-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="product-price" class="required">Precio</label>
+                    <input type="number" id="product-price" min="0" step="0.01" placeholder="Ej: 3.50" required>
+                    <div class="error" id="product-price-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="product-stock" class="required">Stock</label>
+                    <input type="number" id="product-stock" min="0" placeholder="Ej: 100" required>
+                    <div class="error" id="product-stock-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="product-farmer" class="required">Agricultor</label>
+                    <select id="product-farmer" required>
+                        <option value="">Seleccione un agricultor</option>
+                        <!-- Los agricultores se cargarán dinámicamente -->
+                    </select>
+                    <div class="error" id="product-farmer-error"></div>
+                </div>
+                <button type="submit" class="btn" id="product-submit">Guardar Producto</button>
+                <button type="button" class="btn btn-secondary" id="product-cancel" style="display: none;">Cancelar</button>
+            </form>
+            
+            <h3>Lista de Productos</h3>
+            <table id="products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Agricultor</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Tab Ventas -->
+        <div id="sales" class="tab-content">
+            <h2>Registro de Ventas</h2>
+            
+            <div id="sale-message"></div>
+            
+            <form id="sale-form">
+                <div class="form-group">
+                    <label for="sale-product" class="required">Producto</label>
+                    <select id="sale-product" required>
+                        <option value="">Seleccione un producto</option>
+                        <!-- Los productos se cargarán dinámicamente -->
+                    </select>
+                    <div class="error" id="sale-product-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="sale-quantity" class="required">Cantidad</label>
+                    <input type="number" id="sale-quantity" min="1" placeholder="Ej: 10" required>
+                    <div class="error" id="sale-quantity-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="sale-date" class="required">Fecha</label>
+                    <input type="date" id="sale-date" required>
+                    <div class="error" id="sale-date-error"></div>
+                </div>
+                <button type="submit" class="btn" id="sale-submit">Registrar Venta</button>
+            </form>
+            
+            <h3>Historial de Ventas</h3>
+            <table id="sales-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Agricultor</th>
+                        <th>Fecha</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Tab Estadísticas -->
+        <div id="stats" class="tab-content">
+            <h2>Estadísticas de Ventas</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Ventas Totales por Agricultor</h3>
+                    <div id="sales-by-farmer">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Productos por Tipo</h3>
+                    <div id="products-by-type">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Ventas del Mes</h3>
+                    <div id="monthly-sales">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Productos Más Vendidos</h3>
+                    <div id="top-products">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Venta</h3>
+                <span class="close">&times;</span>
+            </div>
+            <p id="confirmation-text">¿Está seguro de que desea registrar esta venta?</p>
+            <div class="actions">
+                <button class="btn" id="confirm-sale">Confirmar</button>
+                <button class="btn btn-secondary" id="cancel-sale">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
