@@ -1,10 +1,36 @@
-// URLs de la API
+// URLs de la API - CORREGIDO CON URLs ABSOLUTAS
+const BASE_URL = 'http://localhost/CooperativaPelicano';
 const API_URL = {
-    farmers: 'api/agricultores.php',
-    products: 'api/productos.php',
-    sales: 'api/ventas.php',
-    stats: 'api/estadisticas.php'
+    farmers: `${BASE_URL}/api/agricultores.php`,
+    products: `${BASE_URL}/api/productos.php`,
+    sales: `${BASE_URL}/api/ventas.php`,
+    stats: `${BASE_URL}/api/estadisticas.php`
 };
+
+console.log('URLs configuradas:', API_URL);
+
+// Función de fetch mejorada con manejo de errores
+async function apiCall(url, options = {}) {
+    try {
+        console.log(`Haciendo petición a: ${url}`);
+        const response = await fetch(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            },
+            ...options
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en API call:', error);
+        throw new Error(`No se pudo conectar con el servidor: ${error.message}`);
+    }
+}
 
 // Estado global de la aplicación
 let appState = {
@@ -41,13 +67,11 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
     });
 });
 
-// Funciones para agricultores
+// Funciones para agricultores - ACTUALIZADAS CON apiCall
 async function loadFarmers() {
     try {
         showLoading('farmers-table', 'Cargando agricultores...');
-        const response = await fetch(API_URL.farmers);
-        if (!response.ok) throw new Error('Error al cargar agricultores');
-        const farmers = await response.json();
+        const farmers = await apiCall(API_URL.farmers);
         
         appState.farmers = farmers;
         
@@ -95,21 +119,12 @@ async function deleteFarmer(id) {
     if (!confirm('¿Está seguro de que desea eliminar este agricultor?')) return;
     
     try {
-        const response = await fetch(API_URL.farmers, {
+        await apiCall(API_URL.farmers, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify({ id: id })
         });
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al eliminar agricultor');
-        }
-        
-        const result = await response.json();
-        showMessage('farmer-message', result.message, 'success');
+        showMessage('farmer-message', 'Agricultor eliminado correctamente', 'success');
         loadFarmers();
         
         // Si estamos en la pestaña de productos, recargar también
@@ -194,21 +209,12 @@ async function saveFarmer(farmerData) {
         const url = farmerData.id ? API_URL.farmers : API_URL.farmers;
         const method = farmerData.id ? 'PUT' : 'POST';
         
-        const response = await fetch(url, {
+        await apiCall(url, {
             method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(farmerData)
         });
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar agricultor');
-        }
-        
-        const result = await response.json();
-        showMessage('farmer-message', result.message, 'success');
+        showMessage('farmer-message', 'Agricultor guardado correctamente', 'success');
         loadFarmers();
         
         // Si estamos en la pestaña de productos, recargar también
@@ -223,13 +229,11 @@ async function saveFarmer(farmerData) {
     }
 }
 
-// Funciones para productos
+// Funciones para productos - ACTUALIZADAS CON apiCall
 async function loadProducts() {
     try {
         showLoading('products-table', 'Cargando productos...');
-        const response = await fetch(API_URL.products);
-        if (!response.ok) throw new Error('Error al cargar productos');
-        const products = await response.json();
+        const products = await apiCall(API_URL.products);
         
         appState.products = products;
         
@@ -265,9 +269,7 @@ async function loadProducts() {
 
 async function loadFarmersForProducts() {
     try {
-        const response = await fetch(API_URL.farmers);
-        if (!response.ok) throw new Error('Error al cargar agricultores');
-        const farmers = await response.json();
+        const farmers = await apiCall(API_URL.farmers);
         
         const select = document.getElementById('product-farmer');
         select.innerHTML = '<option value="">Seleccione un agricultor</option>';
@@ -315,21 +317,12 @@ async function deleteProduct(id) {
     if (!confirm('¿Está seguro de que desea eliminar este producto?')) return;
     
     try {
-        const response = await fetch(API_URL.products, {
+        await apiCall(API_URL.products, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify({ id: id })
         });
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al eliminar producto');
-        }
-        
-        const result = await response.json();
-        showMessage('product-message', result.message, 'success');
+        showMessage('product-message', 'Producto eliminado correctamente', 'success');
         loadProducts();
         
         // Si estamos en la pestaña de ventas, recargar también
@@ -437,21 +430,12 @@ async function saveProduct(productData) {
         const url = productData.id ? API_URL.products : API_URL.products;
         const method = productData.id ? 'PUT' : 'POST';
         
-        const response = await fetch(url, {
+        await apiCall(url, {
             method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(productData)
         });
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al guardar producto');
-        }
-        
-        const result = await response.json();
-        showMessage('product-message', result.message, 'success');
+        showMessage('product-message', 'Producto guardado correctamente', 'success');
         loadProducts();
         
         // Si estamos en la pestaña de ventas, recargar también
@@ -466,13 +450,11 @@ async function saveProduct(productData) {
     }
 }
 
-// Funciones para ventas
+// Funciones para ventas - ACTUALIZADAS CON apiCall
 async function loadSales() {
     try {
         showLoading('sales-table', 'Cargando ventas...');
-        const response = await fetch(API_URL.sales);
-        if (!response.ok) throw new Error('Error al cargar ventas');
-        const sales = await response.json();
+        const sales = await apiCall(API_URL.sales);
         
         appState.sales = sales;
         
@@ -504,9 +486,7 @@ async function loadSales() {
 
 async function loadProductsForSales() {
     try {
-        const response = await fetch(API_URL.products);
-        if (!response.ok) throw new Error('Error al cargar productos');
-        const products = await response.json();
+        const products = await apiCall(API_URL.products);
         
         const select = document.getElementById('sale-product');
         select.innerHTML = '<option value="">Seleccione un producto</option>';
@@ -610,21 +590,12 @@ document.querySelector('.close').addEventListener('click', function() {
 
 async function registerSale(saleData) {
     try {
-        const response = await fetch(API_URL.sales, {
+        await apiCall(API_URL.sales, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(saleData)
         });
         
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Error al registrar venta');
-        }
-        
-        const result = await response.json();
-        showMessage('sale-message', result.message, 'success');
+        showMessage('sale-message', 'Venta registrada correctamente', 'success');
         loadSales();
         loadProducts(); // Para actualizar el stock
         loadProductsForSales(); // Para actualizar el select de productos
@@ -636,12 +607,10 @@ async function registerSale(saleData) {
     }
 }
 
-// Funciones para estadísticas
+// Funciones para estadísticas - ACTUALIZADAS CON apiCall
 async function loadStats() {
     try {
-        const response = await fetch(API_URL.stats);
-        if (!response.ok) throw new Error('Error al cargar estadísticas');
-        const stats = await response.json();
+        const stats = await apiCall(API_URL.stats);
         
         // Ventas por agricultor
         const salesByFarmerElement = document.getElementById('sales-by-farmer');

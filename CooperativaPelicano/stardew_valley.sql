@@ -128,3 +128,10 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+INSERT INTO AGRICULTORES (id, nombre, granja, correo) VALUES
+(1, 'Krobus', 'Alcantarilla', 'KrobusTheMonster@email.com');
+
+INSERT INTO AGRICULTORES (id, nombre, granja, correo) VALUES
+(2, 'Shane', 'Cerveceria', 'ShaneElAlcoholico@email.com');
